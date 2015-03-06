@@ -15,10 +15,8 @@ using System.Text.RegularExpressions;
 namespace SJKP.AzureSearch.PdfIndexer
 {
     public class Functions
-    {
-        // This function will get triggered/executed when a new message is written 
-        // on an Azure Queue called queue.
-        public static void ProcessQueueMessage([BlobTrigger("documents/{name}.{ext}")] Stream input, string name, string ext)
+    {        
+        public static void IndexPdfDocument([BlobTrigger("documents/{name}.{ext}")] Stream input, string name, string ext)
         {
             if (ext.ToLower() != "pdf")
             {
@@ -46,8 +44,7 @@ namespace SJKP.AzureSearch.PdfIndexer
             for (int i = 0; i < (int)Math.Ceiling(actions.Count / 1000.0); i++)
             {
                 client.Documents.Index(new IndexBatch(actions.Skip(i*1000).Take(actions.Count-(i*1000))));
-            }
-            
+            }            
         }
 
         private static string MakeSafeId(string input) {
